@@ -64,8 +64,16 @@ public class FrmVendedor extends javax.swing.JFrame {
         btnGrabarModificado = new javax.swing.JButton();
         btnListado = new javax.swing.JButton();
         btnConsultar = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
         txtCodigoo = new javax.swing.JTextField();
         txtCantidad = new javax.swing.JTextField();
+        jTextField1 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jTextField5 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jComboBox1 = new javax.swing.JComboBox<>();
         Jimagen = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -83,6 +91,8 @@ public class FrmVendedor extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
 
         jInternalFrame1.setVisible(true);
 
@@ -216,6 +226,10 @@ public class FrmVendedor extends javax.swing.JFrame {
         jPanel1.add(lblMantenimiento);
         lblMantenimiento.setBounds(140, 340, 1100, 110);
 
+        jTextField2.setText("jTextField1");
+        jPanel1.add(jTextField2);
+        jTextField2.setBounds(850, 640, 180, 100);
+
         txtCodigoo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
         txtCodigoo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -234,11 +248,38 @@ public class FrmVendedor extends javax.swing.JFrame {
         jPanel1.add(txtCantidad);
         txtCantidad.setBounds(140, 260, 220, 60);
 
+        jTextField1.setText("jTextField1");
+        jPanel1.add(jTextField1);
+        jTextField1.setBounds(140, 670, 180, 100);
+
+        jButton2.setText("jButton2");
+        jPanel1.add(jButton2);
+        jButton2.setBounds(1080, 660, 120, 60);
+
+        jButton1.setText("jButton1");
+        jPanel1.add(jButton1);
+        jButton1.setBounds(650, 470, 120, 60);
+
+        jTextField5.setText("jTextField5");
+        jPanel1.add(jTextField5);
+        jTextField5.setBounds(440, 670, 180, 100);
+
+        jButton3.setText("jButton3");
+        jPanel1.add(jButton3);
+        jButton3.setBounds(650, 560, 120, 60);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane5.setViewportView(jTextArea1);
+
+        jPanel1.add(jScrollPane5);
+        jScrollPane5.setBounds(840, 480, 440, 150);
+
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BCP", "INTERBANK", "SCOTIABANK", "BANBIF", "BBVA ", "ETC" }));
         jPanel1.add(jComboBox1);
         jComboBox1.setBounds(520, 270, 240, 60);
         jPanel1.add(Jimagen);
-        Jimagen.setBounds(840, 60, 320, 250);
+        Jimagen.setBounds(840, 50, 320, 250);
 
         jLabel6.setText("NOMBRE CLIENTE : ");
         jPanel1.add(jLabel6);
@@ -290,7 +331,7 @@ public class FrmVendedor extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tRegistros);
 
         jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(150, 470, 1090, 270);
+        jScrollPane2.setBounds(130, 470, 500, 180);
         jPanel1.add(rSLabelHora1);
         rSLabelHora1.setBounds(1210, 150, 120, 40);
         jPanel1.add(txtFechaVenta);
@@ -323,6 +364,19 @@ public class FrmVendedor extends javax.swing.JFrame {
         jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jPanel1.add(jLabel10);
         jLabel10.setBounds(0, 0, 1350, 790);
+
+        jTextField3.setText("jTextField1");
+        jPanel1.add(jTextField3);
+        jTextField3.setBounds(140, 670, 180, 100);
+
+        jTextField4.setText("jTextField1");
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jTextField4);
+        jTextField4.setBounds(140, 670, 180, 100);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 1350, 790);
@@ -534,6 +588,10 @@ public class FrmVendedor extends javax.swing.JFrame {
         
     }//GEN-LAST:event_cmbPRODUCTOSItemStateChanged
 
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
     
     void DefinirAnchos() {
         TableColumn columna;
@@ -681,6 +739,9 @@ public class FrmVendedor extends javax.swing.JFrame {
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnReturn;
     private javax.swing.JComboBox<String> cmbPRODUCTOS;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame1;
@@ -696,6 +757,13 @@ public class FrmVendedor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JPanel lblMantenimiento;
     private rojeru_san.RSLabelHora rSLabelHora1;
     private javax.swing.JTable tRegistros;
