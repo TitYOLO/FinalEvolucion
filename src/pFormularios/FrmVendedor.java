@@ -66,11 +66,13 @@ public class FrmVendedor extends javax.swing.JFrame {
         btnConsultar = new javax.swing.JButton();
         txtCodigoo = new javax.swing.JTextField();
         txtCantidad = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox<>();
         Jimagen = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jCheckBox3 = new javax.swing.JCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         tRegistros = new javax.swing.JTable();
         rSLabelHora1 = new rojeru_san.RSLabelHora();
@@ -78,7 +80,9 @@ public class FrmVendedor extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
 
         jInternalFrame1.setVisible(true);
 
@@ -102,7 +106,6 @@ public class FrmVendedor extends javax.swing.JFrame {
         jPanel1.setLayout(null);
 
         cmbPRODUCTOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "COMBO 1", "COMBO 2", "POLLO ENTERO", "1/2 POLLO", "1/4 POLLO", "PROMO 1/4 POLLO + GASEOSA", "PROMO POLLO ENTERO + 1.5 GASEOSA", "PROMO 1/2 POLLO PEPSI " }));
-        cmbPRODUCTOS.setOpaque(false);
         cmbPRODUCTOS.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbPRODUCTOSItemStateChanged(evt);
@@ -230,6 +233,10 @@ public class FrmVendedor extends javax.swing.JFrame {
         });
         jPanel1.add(txtCantidad);
         txtCantidad.setBounds(140, 260, 220, 60);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BCP", "INTERBANK", "SCOTIABANK", "BANBIF", "BBVA ", "ETC" }));
+        jPanel1.add(jComboBox1);
+        jComboBox1.setBounds(520, 270, 240, 60);
         jPanel1.add(Jimagen);
         Jimagen.setBounds(840, 60, 320, 250);
 
@@ -244,11 +251,15 @@ public class FrmVendedor extends javax.swing.JFrame {
 
         jLabel5.setText("PRODUCTOS :");
         jPanel1.add(jLabel5);
-        jLabel5.setBounds(410, 110, 80, 14);
+        jLabel5.setBounds(410, 110, 80, 16);
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/JuanitosLogo150.png"))); // NOI18N
         jPanel1.add(jLabel7);
         jLabel7.setBounds(1200, 0, 150, 150);
+
+        jCheckBox3.setText("TARJETA");
+        jPanel1.add(jCheckBox3);
+        jCheckBox3.setBounds(408, 290, 100, 20);
 
         tRegistros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -297,9 +308,21 @@ public class FrmVendedor extends javax.swing.JFrame {
         jPanel1.add(jLabel4);
         jLabel4.setBounds(60, 270, 70, 40);
 
+        jLabel9.setText("PRODUCTOS :");
+        jPanel1.add(jLabel9);
+        jLabel9.setBounds(410, 110, 80, 16);
+
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
+        jLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jPanel1.add(jLabel3);
         jLabel3.setBounds(0, 0, 1350, 790);
+
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
+        jLabel10.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.add(jLabel10);
+        jLabel10.setBounds(0, 0, 1350, 790);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 1350, 790);
@@ -658,8 +681,11 @@ public class FrmVendedor extends javax.swing.JFrame {
     private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnReturn;
     private javax.swing.JComboBox<String> cmbPRODUCTOS;
+    private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -667,6 +693,7 @@ public class FrmVendedor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel lblMantenimiento;
