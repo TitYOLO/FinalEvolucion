@@ -6,10 +6,6 @@
 package pFormularios;
 
 
-import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
-import pClases.Cliente;
-import pClases.ArregloCliente;
 
 /**import pClases.ArregloCliente;
  *
@@ -17,7 +13,6 @@ import pClases.ArregloCliente;
  */
 public class frVentasDiarias extends javax.swing.JFrame {
 
-    ArregloCliente F  = new ArregloCliente();
     
     public frVentasDiarias() {
         initComponents();
@@ -130,7 +125,7 @@ public class frVentasDiarias extends javax.swing.JFrame {
     
     
     void listar() {
-        if (F.getTamaño() > 0) {
+        /*if (F.getTamaño() > 0) {
             for (int i = 0; i < F.getTamaño(); i++) {
                 Cliente fact = F.obtener(i);
                 tRegistros.setValueAt(fact.getCodigo(), i, 0);
@@ -143,7 +138,7 @@ public class frVentasDiarias extends javax.swing.JFrame {
             }
         } else {
             limpiaMatriz();
-        }
+        }*/
     }
     
     

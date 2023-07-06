@@ -1,52 +1,136 @@
 
 package pFormularios;
  
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.GregorianCalendar;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
-import pClases.ArregloCliente;
-import pClases.Cliente;
-import java.util.GregorianCalendar;
-import javax.swing.ImageIcon;
-import java.net.URL;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
 
+import FProductos.Producto;
+import FileManager.ClienteFileManager;
+import FileManager.DetPedidoFileManager;
+import FileManager.PedidoFileManager;
+import FileManager.ProductoFileManager;
+import Repository.ImplRepository.ClienteRepository;
+import Repository.ImplRepository.DetPedidoRepository;
+import Repository.ImplRepository.PedidoRepository;
+import Repository.ImplRepository.ProductoRepository;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import pClases.*;
 
 public class FrmVendedor extends javax.swing.JFrame {
-    ArregloCliente f = new ArregloCliente();
-    int num = 0;
 
-     Cliente p;
-   Cliente rp;
-   
- 
- public FrmVendedor() {
-        initComponents();
-        DefinirAnchos();
-        asignaFecha();
-        habilitaCajas(false);
-        this.setLocationRelativeTo(this);
-        btnGrabarIngreso.setVisible(false);
-        btnGrabarModificado.setVisible(false);
-        listar();
-    }
-
+    DefaultTableModel Modelotabla;
+    String[] cabecera={"IDProducto","Nombre","Stock","Precio"};
+    String[][] data = {};
+    PrecioFormatter C = new PrecioFormatter();
+    PedidoRepository ArregloP = new PedidoRepository(new PedidoFileManager());
+    DetPedidoRepository ArregloDP = new DetPedidoRepository(new DetPedidoFileManager());
+    ProductoRepository ArregloM = new ProductoRepository(new ProductoFileManager());
+    ClienteRepository ArregloC = new ClienteRepository((new ClienteFileManager()));
     
-   
+    public FrmVendedor() {
+        initComponents();
+        inicial();
+    }
+    
+    void inicial() {
+        ArregloP.cargarPedidos();
+        ArregloDP.cargarDetPedidos();
+        ArregloM.cargarProductos();
+        Modelotabla = new DefaultTableModel(data,cabecera);
+        tMenu.setModel(Modelotabla);
+        DefinirAnchos();
+        listarTabla();
+        txtMontoTotal.setEditable(false);
+    }
+    
+    String obtenerFechaR() {
+        GregorianCalendar cal = new GregorianCalendar();      
+        return ("" + cal.get(Calendar.DATE) +"/"+(cal.get(Calendar.MONTH)+1)+"/"+cal.get(Calendar.YEAR));
+    }
+    String obtenerCodigoVenta(){return txtCodigoVenta.getText();}
+    String obtenerMetodo(){return cbMet_Pago.getSelectedItem().toString();}
+    String obtenerDNI(){return txtDNI.getText();}
+    String obtenerNombre(){return txtNombre.getText();}
+    String obtenerIDMenu(){return txtIDMenu.getText();}
+    String obtenerCodigo(){return txtCodigoVenta.getText();}
+    int obtenerCant(){return Integer.parseInt(txtCant.getText());}
+    
+    void Checks(){
+        limpiarTabla();
+        if (chbBebidas.isSelected()) {
+            lisTablaCheck("Bebida");
+        }
+        if (chbGC.isSelected()) {
+            lisTablaCheck("Normal");
+        }
+        if (chbRepos.isSelected()) {
+            lisTablaCheck("Combo");
+        }
+        if(chbBebidas.isSelected()==false &&
+                chbGC.isSelected()==false && chbRepos.isSelected()==false)listarTabla();
+    }
+    
+    void DefinirAnchos() {
+        int Tmi[]={60,300,50,75};
+        TableColumn columna;
+        columna = tMenu.getColumnModel().getColumn(0);
+        columna.setPreferredWidth(Tmi[0]);
+        columna = tMenu.getColumnModel().getColumn(1);
+        columna.setPreferredWidth(Tmi[1]);
+        columna = tMenu.getColumnModel().getColumn(2);
+        columna.setPreferredWidth(Tmi[2]);
+        columna = tMenu.getColumnModel().getColumn(3);
+        columna.setPreferredWidth(Tmi[3]);
+        tMenu.getTableHeader().setReorderingAllowed(false);
+        tMenu.getTableHeader().setResizingAllowed(false);
+    }
+    
+    void lisTablaCheck(String Cate) {
+        if (ArregloM.getTamaño()> 0) {
+            for (int i = 0; i < ArregloM.getTamaño(); i++) {
+                Producto t = ArregloM.obtener(i);
+                if(t.getCategoria().equals(Cate)){
+                    Object[] Fila = {t.getIDProducto(),t.getNombre(),t.getStock(),t.getPrecio()};
+                    Modelotabla.addRow(Fila);
+                }
+            }
+        }
+    }
+    
+    void listarTabla() {
+        limpiarTabla();
+        if (ArregloM.getTamaño()> 0) {
+            for (int i = 0; i < ArregloM.getTamaño(); i++) {
+                Producto t = ArregloM.obtener(i);
+                Object[] Fila = {t.getIDProducto(),t.getNombre(),t.getStock(),C.formatearPrecio(t.getPrecio())};
+                Modelotabla.addRow(Fila);
+            }
+        }
+    }
+    
+    void limpiarTabla() {
+        Modelotabla.setRowCount(0);
+    }
+    void LimpiarCajas() {
+        txtNombre.setText("");
+        txtDNI.setText("");
+        txtIDMenu.setText("");
+        txtCant.setText("");
+        txtMontoTotal.setText("");
+        txaResultado.setText("");
+    }
+    
+    String validar() {
+        if (txtDNI.getText().equals("") || txtNombre.getText().equals("")
+                ||txtCodigoVenta.getText().equals("")) {
+            return "Rellenar Todos los Campos"; 
+        } else if(txaResultado.getText().equals("")){
+            return "Ingresar Pedidos"; 
+        }else return "";
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -55,44 +139,36 @@ public class FrmVendedor extends javax.swing.JFrame {
         jInternalFrame1 = new javax.swing.JInternalFrame();
         btnReturn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
-        cmbPRODUCTOS = new javax.swing.JComboBox<>();
-        txtNombreCliente = new javax.swing.JTextField();
-        lblMantenimiento = new javax.swing.JPanel();
-        btnModificar = new javax.swing.JButton();
-        btnGrabarIngreso = new javax.swing.JButton();
-        btnRegistrar = new javax.swing.JButton();
-        btnGrabarModificado = new javax.swing.JButton();
-        btnListado = new javax.swing.JButton();
-        btnConsultar = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
-        txtCodigoo = new javax.swing.JTextField();
-        txtCantidad = new javax.swing.JTextField();
-        jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jTextField5 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        Jimagen = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tRegistros = new javax.swing.JTable();
-        rSLabelHora1 = new rojeru_san.RSLabelHora();
-        txtFechaVenta = new javax.swing.JTextField();
+        txtCant = new javax.swing.JTextField();
+        txtIDMenu = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tMenu = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        txtCodigoVenta = new javax.swing.JTextField();
+        cbMet_Pago = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtDNI = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        rSLabelHora1 = new rojeru_san.RSLabelHora();
+        txtMontoTotal = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txaResultado = new javax.swing.JTextArea();
+        btnFinalizar = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
+        btnQuitar = new javax.swing.JButton();
+        txtNombre = new javax.swing.JTextField();
+        chbGC = new javax.swing.JCheckBox();
+        chbBebidas = new javax.swing.JCheckBox();
+        chbRepos = new javax.swing.JCheckBox();
+        jLabel6 = new javax.swing.JLabel();
+        Jimagen = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        FONDO2 = new javax.swing.JLabel();
+        FONDO = new javax.swing.JLabel();
 
         jInternalFrame1.setVisible(true);
 
@@ -115,268 +191,194 @@ public class FrmVendedor extends javax.swing.JFrame {
         jPanel1.setAutoscrolls(true);
         jPanel1.setLayout(null);
 
-        cmbPRODUCTOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "COMBO 1", "COMBO 2", "POLLO ENTERO", "1/2 POLLO", "1/4 POLLO", "PROMO 1/4 POLLO + GASEOSA", "PROMO POLLO ENTERO + 1.5 GASEOSA", "PROMO 1/2 POLLO PEPSI " }));
-        cmbPRODUCTOS.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbPRODUCTOSItemStateChanged(evt);
-            }
-        });
-        cmbPRODUCTOS.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseMoved(evt);
-            }
-        });
-        cmbPRODUCTOS.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMousePressed(evt);
-            }
-        });
-        cmbPRODUCTOS.addActionListener(new java.awt.event.ActionListener() {
+        txtCant.setBorder(null);
+        txtCant.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbPRODUCTOSActionPerformed(evt);
+                txtCantActionPerformed(evt);
             }
         });
-        jPanel1.add(cmbPRODUCTOS);
-        cmbPRODUCTOS.setBounds(490, 80, 270, 70);
+        jPanel1.add(txtCant);
+        txtCant.setBounds(220, 620, 120, 50);
 
-        txtNombreCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        txtNombreCliente.addActionListener(new java.awt.event.ActionListener() {
+        txtIDMenu.setBorder(null);
+        txtIDMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreClienteActionPerformed(evt);
+                txtIDMenuActionPerformed(evt);
             }
         });
-        jPanel1.add(txtNombreCliente);
-        txtNombreCliente.setBounds(140, 180, 220, 60);
+        jPanel1.add(txtIDMenu);
+        txtIDMenu.setBounds(70, 620, 100, 50);
 
-        lblMantenimiento.setBackground(new java.awt.Color(0, 204, 255));
-        lblMantenimiento.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Mantenimiento:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        lblMantenimiento.setForeground(new java.awt.Color(255, 255, 255));
-        lblMantenimiento.setOpaque(false);
-        lblMantenimiento.setLayout(null);
+        tMenu.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/usuario32.png"))); // NOI18N
-        btnModificar.setContentAreaFilled(false);
-        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane3.setViewportView(tMenu);
+
+        jPanel1.add(jScrollPane3);
+        jScrollPane3.setBounds(70, 300, 610, 260);
+
+        jLabel2.setText("Código de Venta");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(80, 90, 110, 15);
+
+        txtCodigoVenta.setBorder(null);
+        txtCodigoVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModificarActionPerformed(evt);
+                txtCodigoVentaActionPerformed(evt);
             }
         });
-        lblMantenimiento.add(btnModificar);
-        btnModificar.setBounds(740, 30, 70, 60);
+        jPanel1.add(txtCodigoVenta);
+        txtCodigoVenta.setBounds(80, 110, 150, 50);
 
-        btnGrabarIngreso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/guardar-el-archivo (1).png"))); // NOI18N
-        btnGrabarIngreso.setContentAreaFilled(false);
-        btnGrabarIngreso.addActionListener(new java.awt.event.ActionListener() {
+        cbMet_Pago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta de Credito / Debito" }));
+        jPanel1.add(cbMet_Pago);
+        cbMet_Pago.setBounds(290, 110, 200, 60);
+
+        jLabel3.setText("Método de pago");
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(290, 90, 110, 15);
+
+        txtDNI.setBorder(null);
+        txtDNI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGrabarIngresoActionPerformed(evt);
+                txtDNIActionPerformed(evt);
             }
         });
-        lblMantenimiento.add(btnGrabarIngreso);
-        btnGrabarIngreso.setBounds(160, 30, 70, 60);
+        jPanel1.add(txtDNI);
+        txtDNI.setBounds(80, 210, 150, 50);
 
-        btnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/agrega32.png"))); // NOI18N
-        btnRegistrar.setContentAreaFilled(false);
-        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegistrarActionPerformed(evt);
-            }
-        });
-        lblMantenimiento.add(btnRegistrar);
-        btnRegistrar.setBounds(300, 30, 70, 60);
+        jLabel5.setText("COD Cliente");
+        jPanel1.add(jLabel5);
+        jLabel5.setBounds(80, 190, 110, 15);
 
-        btnGrabarModificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/guardar-el-archivo (1).png"))); // NOI18N
-        btnGrabarModificado.setContentAreaFilled(false);
-        btnGrabarModificado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGrabarModificadoActionPerformed(evt);
-            }
-        });
-        lblMantenimiento.add(btnGrabarModificado);
-        btnGrabarModificado.setBounds(450, 30, 70, 60);
-
-        btnListado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/lista-de-tareas.png"))); // NOI18N
-        btnListado.setContentAreaFilled(false);
-        btnListado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnListadoActionPerformed(evt);
-            }
-        });
-        lblMantenimiento.add(btnListado);
-        btnListado.setBounds(840, 30, 70, 60);
-
-        btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/BUSCAR 32.png"))); // NOI18N
-        btnConsultar.setContentAreaFilled(false);
-        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConsultarActionPerformed(evt);
-            }
-        });
-        lblMantenimiento.add(btnConsultar);
-        btnConsultar.setBounds(610, 30, 70, 60);
-
-        jPanel1.add(lblMantenimiento);
-        lblMantenimiento.setBounds(140, 340, 1100, 110);
-
-        jTextField2.setText("jTextField1");
-        jPanel1.add(jTextField2);
-        jTextField2.setBounds(850, 640, 180, 100);
-
-        txtCodigoo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
-        txtCodigoo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodigooActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtCodigoo);
-        txtCodigoo.setBounds(140, 90, 220, 60);
-
-        txtCantidad.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        txtCantidad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCantidadActionPerformed(evt);
-            }
-        });
-        jPanel1.add(txtCantidad);
-        txtCantidad.setBounds(140, 260, 220, 60);
-
-        jTextField1.setText("jTextField1");
-        jPanel1.add(jTextField1);
-        jTextField1.setBounds(140, 670, 180, 100);
-
-        jButton2.setText("jButton2");
-        jPanel1.add(jButton2);
-        jButton2.setBounds(1080, 660, 120, 60);
-
-        jButton1.setText("jButton1");
-        jPanel1.add(jButton1);
-        jButton1.setBounds(650, 470, 120, 60);
-
-        jTextField5.setText("jTextField5");
-        jPanel1.add(jTextField5);
-        jTextField5.setBounds(440, 670, 180, 100);
-
-        jButton3.setText("jButton3");
-        jPanel1.add(jButton3);
-        jButton3.setBounds(650, 560, 120, 60);
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane5.setViewportView(jTextArea1);
-
-        jPanel1.add(jScrollPane5);
-        jScrollPane5.setBounds(840, 480, 440, 150);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BCP", "INTERBANK", "SCOTIABANK", "BANBIF", "BBVA ", "ETC" }));
-        jPanel1.add(jComboBox1);
-        jComboBox1.setBounds(520, 270, 240, 60);
-        jPanel1.add(Jimagen);
-        Jimagen.setBounds(840, 50, 320, 250);
-
-        jLabel6.setText("NOMBRE CLIENTE : ");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(30, 190, 120, 20);
+        jLabel12.setText("Cantidad");
+        jPanel1.add(jLabel12);
+        jLabel12.setBounds(220, 600, 80, 15);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
         jLabel1.setText("REGISTRO DE COMPRA");
         jPanel1.add(jLabel1);
         jLabel1.setBounds(480, 10, 310, 70);
 
-        jLabel5.setText("PRODUCTOS :");
-        jPanel1.add(jLabel5);
-        jLabel5.setBounds(410, 110, 80, 16);
+        jLabel11.setText("ID Menu");
+        jPanel1.add(jLabel11);
+        jLabel11.setBounds(70, 600, 60, 15);
+        jPanel1.add(rSLabelHora1);
+        rSLabelHora1.setBounds(1210, 150, 120, 40);
+
+        txtMontoTotal.setBorder(null);
+        txtMontoTotal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMontoTotalActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtMontoTotal);
+        txtMontoTotal.setBounds(850, 600, 120, 50);
+
+        jLabel13.setText("Monto Total");
+        jPanel1.add(jLabel13);
+        jLabel13.setBounds(850, 580, 80, 15);
+
+        txaResultado.setColumns(20);
+        txaResultado.setRows(5);
+        jScrollPane1.setViewportView(txaResultado);
+
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(830, 300, 350, 270);
+
+        btnFinalizar.setText("Finalizar");
+        btnFinalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalizarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnFinalizar);
+        btnFinalizar.setBounds(1000, 590, 170, 60);
+
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/1491254405-plusaddmoredetail_82972.png"))); // NOI18N
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnAgregar);
+        btnAgregar.setBounds(420, 610, 78, 70);
+
+        btnQuitar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/1491254402-minussubtractreducediscount_82971.png"))); // NOI18N
+        btnQuitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuitarActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnQuitar);
+        btnQuitar.setBounds(520, 610, 78, 70);
+
+        txtNombre.setBorder(null);
+        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNombreActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtNombre);
+        txtNombre.setBounds(290, 210, 280, 50);
+
+        chbGC.setBackground(new java.awt.Color(0, 204, 204));
+        chbGC.setText("Normal");
+        chbGC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chbGCActionPerformed(evt);
+            }
+        });
+        jPanel1.add(chbGC);
+        chbGC.setBounds(700, 360, 80, 23);
+
+        chbBebidas.setBackground(new java.awt.Color(0, 204, 204));
+        chbBebidas.setForeground(new java.awt.Color(255, 255, 255));
+        chbBebidas.setText("Bebida");
+        chbBebidas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chbBebidasActionPerformed(evt);
+            }
+        });
+        jPanel1.add(chbBebidas);
+        chbBebidas.setBounds(700, 390, 81, 23);
+
+        chbRepos.setBackground(new java.awt.Color(0, 204, 204));
+        chbRepos.setText("Combo");
+        chbRepos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chbReposActionPerformed(evt);
+            }
+        });
+        jPanel1.add(chbRepos);
+        chbRepos.setBounds(700, 420, 81, 23);
+
+        jLabel6.setText("Nombre");
+        jPanel1.add(jLabel6);
+        jLabel6.setBounds(290, 190, 110, 15);
+        jPanel1.add(Jimagen);
+        Jimagen.setBounds(840, 50, 320, 250);
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/JuanitosLogo150.png"))); // NOI18N
         jPanel1.add(jLabel7);
         jLabel7.setBounds(1200, 0, 150, 150);
 
-        jCheckBox3.setText("TARJETA");
-        jPanel1.add(jCheckBox3);
-        jCheckBox3.setBounds(408, 290, 100, 20);
+        FONDO2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
+        FONDO2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        FONDO2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.add(FONDO2);
+        FONDO2.setBounds(0, 0, 1350, 790);
 
-        tRegistros.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "N° Registro", "Nombre Cliente", "Nombre Producto", "Precio", "Cantidad", "Total", "Fecha"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tRegistros);
-
-        jPanel1.add(jScrollPane2);
-        jScrollPane2.setBounds(130, 470, 500, 180);
-        jPanel1.add(rSLabelHora1);
-        rSLabelHora1.setBounds(1210, 150, 120, 40);
-        jPanel1.add(txtFechaVenta);
-        txtFechaVenta.setBounds(520, 170, 220, 60);
-
-        jLabel2.setText("CODIGO BOLETA :");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(50, 110, 90, 20);
-
-        jLabel8.setText("FECHA:");
-        jPanel1.add(jLabel8);
-        jLabel8.setBounds(430, 180, 60, 30);
-
-        jLabel4.setText("CANTIDAD : ");
-        jPanel1.add(jLabel4);
-        jLabel4.setBounds(60, 270, 70, 40);
-
-        jLabel9.setText("PRODUCTOS :");
-        jPanel1.add(jLabel9);
-        jLabel9.setBounds(410, 110, 80, 16);
-
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
-        jLabel3.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel1.add(jLabel3);
-        jLabel3.setBounds(0, 0, 1350, 790);
-
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
-        jLabel10.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel10.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jPanel1.add(jLabel10);
-        jLabel10.setBounds(0, 0, 1350, 790);
-
-        jTextField3.setText("jTextField1");
-        jPanel1.add(jTextField3);
-        jTextField3.setBounds(140, 670, 180, 100);
-
-        jTextField4.setText("jTextField1");
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jTextField4);
-        jTextField4.setBounds(140, 670, 180, 100);
+        FONDO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
+        FONDO.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        FONDO.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.add(FONDO);
+        FONDO.setBounds(0, 0, 1350, 790);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(0, 0, 1350, 790);
@@ -394,301 +396,176 @@ public class FrmVendedor extends javax.swing.JFrame {
         objl2.setVisible(true); 
     }//GEN-LAST:event_btnReturnActionPerformed
 
-    private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
+    private void txtIDMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDMenuActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantidadActionPerformed
+    }//GEN-LAST:event_txtIDMenuActionPerformed
 
-    private void txtCodigooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigooActionPerformed
-
-    }//GEN-LAST:event_txtCodigooActionPerformed
-
-    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        try {
-            limpiaCajas();
-            limpiaMatriz();
-            int buscoFactura = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Ingrese un numero de factura: "));
-        Cliente fact = f.buscar(buscoFactura);
-        if (fact != null) {
-            tRegistros.setValueAt(fact.getCodigo(), 0, 0);
-            tRegistros.setValueAt(fact.getNombreCliente(), 0, 1);
-            tRegistros.setValueAt(fact.getNombreProducto(), 0, 2);
-            tRegistros.setValueAt(fact.getCantidad(),0,4);
-            tRegistros.setValueAt(fact.cantidadTotal(),0,5);
-            tRegistros.setValueAt(fact.getFecha(),0,6);
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Factura NO encontrada",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-        }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error de entrada de datos",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btnConsultarActionPerformed
-
-    private void btnListadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListadoActionPerformed
-        listar();
-    }//GEN-LAST:event_btnListadoActionPerformed
-
-    private void btnGrabarModificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarModificadoActionPerformed
-        try {
-            Cliente fact = f.buscar(getCodigo());
-            fact.setNombreCliente(getNombreCliente());
-            fact.setNombreProducto(getNombreProducto());
-            fact.setCombos(getPrecio());
-            fact.setCantidad(getCantidad());
-            fact.setFecha(getFecha());
-            JOptionPane.showMessageDialog(null, "Factura modificada correctamente",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-            listar();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Ocurrio un error al intentar grabar",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-        btnGrabarModificado.setVisible(false);
-        btnModificar.setVisible(true);
-    }//GEN-LAST:event_btnGrabarModificadoActionPerformed
-
-    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        txtCodigoo.setText("" + generaNumero());
-        txtNombreCliente.requestFocus();
-
-        habilitaCajas(true);
-        txtNombreCliente.setEditable(true);
-
-        txtNombreCliente.setText("");
-        txtCantidad.setText("");
-        //        cmbPRODUCTOS.setSelectedIndex(0);
-        btnRegistrar.setVisible(false);
-        btnGrabarIngreso.setVisible(true);
-    }//GEN-LAST:event_btnRegistrarActionPerformed
-
-    private void btnGrabarIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarIngresoActionPerformed
-
-        try {
-            habilitaCajas(false);
-            btnRegistrar.setVisible(true);
-            btnGrabarIngreso.setVisible(false);
-            Cliente fact = new Cliente(getCodigo(), getNombreCliente(),getNombreProducto(),getCantidad(),getPrecio(),getFecha());
-            f.agregar(fact);
-            f.grabar_txt();
-            listar();
-            JOptionPane.showMessageDialog(null, "Factura ingresada correctamente",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error de ingreso de datos",
-                "Error", JOptionPane.ERROR_MESSAGE);
-            num--;
-        }
-    }//GEN-LAST:event_btnGrabarIngresoActionPerformed
-
-    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        try {
-            limpiaCajas();
-            limpiaMatriz();
-
-            btnModificar.setVisible(false);
-            btnGrabarModificado.setVisible(true);
-
-            int buscaRegistro = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Ingrese N° de Registro"));
-        Cliente fact = f.buscar(buscaRegistro);
-
-        if (fact != null) {
-            tRegistros.setValueAt(fact.getCodigo(), 0, 0);
-            tRegistros.setValueAt(fact.getNombreCliente(), 0, 1);
-            tRegistros.setValueAt(fact.getNombreProducto(), 0, 2);
-            tRegistros.setValueAt(fact.getCantidad(),0,4);
- 
-            txtCodigoo.setText("" + fact.getCodigo());
-            txtNombreCliente.setText(fact.getNombreCliente());
-            txtCantidad.setText(""+fact.getCantidad());
-            
-            
-            habilitaCajas(true);
-            txtCodigoo.setEditable(true);
-            txtNombreCliente.setEditable(true);
-            txtCantidad.setEditable(true);
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Factura NO encontrada",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-        }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Factura NO encontrada",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-            btnModificar.setVisible(true);
-            btnGrabarModificado.setVisible(false);
-        }
-    }//GEN-LAST:event_btnModificarActionPerformed
-
-    private void txtNombreClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreClienteActionPerformed
+    private void txtCantActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreClienteActionPerformed
+    }//GEN-LAST:event_txtCantActionPerformed
 
-    private void cmbPRODUCTOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSActionPerformed
-         
-        
-    }//GEN-LAST:event_cmbPRODUCTOSActionPerformed
-
-    private void cmbPRODUCTOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseClicked
-
-      
-        
-    }//GEN-LAST:event_cmbPRODUCTOSMouseClicked
-
-    private void cmbPRODUCTOSMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMousePressed
-        
-    }//GEN-LAST:event_cmbPRODUCTOSMousePressed
-
-    private void cmbPRODUCTOSMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseExited
-        
-        
-    }//GEN-LAST:event_cmbPRODUCTOSMouseExited
-
-    private void cmbPRODUCTOSMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseEntered
-       
-    }//GEN-LAST:event_cmbPRODUCTOSMouseEntered
-
-    private void cmbPRODUCTOSMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseMoved
+    private void txtMontoTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMontoTotalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cmbPRODUCTOSMouseMoved
+    }//GEN-LAST:event_txtMontoTotalActionPerformed
 
-    private void cmbPRODUCTOSItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSItemStateChanged
-        int posi = cmbPRODUCTOS.getSelectedIndex();
-        switch(posi){
-            case 0 :
-                 Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_combo1.jpg")));
-                break;
-                case 1 :
-                    Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_combo2.jpg")));
-                break;
-                case 2 :
-                     Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_polloentero.jpg")));
-                break;
-                case 3 :
-                    Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_mediopollo.jpg")));
-                break;
-                case 4 :
-                    Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_cuarto.jpg")));
-                break;
-                case 5 :
-                     Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_cuartogas.png")));
-                break;
-                case 6 :
-                     Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_pollito.jpg")));
-                break;
-                case 7 :
-                     Jimagen.setIcon(new ImageIcon(FrmVendedor.class.getResource("/pImagenes/java_mediopepsi.jpg")));
-                    break;
-                
-        }
-        
-        
-    }//GEN-LAST:event_cmbPRODUCTOSItemStateChanged
-
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void btnFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+        try {
+            if (validar().equals("")) {
+                Pedido auxP = ArregloP.buscarID(obtenerCodigo());
+                Cliente aux1 = ArregloC.buscarID(obtenerDNI());
+                if (auxP == null) {
+                    if (aux1 == null) {
+                        Cliente NC = new Cliente(obtenerDNI(), obtenerNombre());
+                        ArregloC.agregar(NC);
+                        ArregloC.guardarCliente();
+                    }
+                    for (int i = 0; i < ArregloDP.getTamaño(); i++) {
+                        DetPedido DET = ArregloDP.obtener(i);
+                        if (DET.getCOD_Detalle().equals(obtenerCodigoVenta())) {
+                            Producto M = ArregloM.buscarID(DET.getCOD_Menu());
+                            if (M.getStock() - DET.getCantidad() == 0) {
+                                M.setStock(0);
+                                M.setEstado("No Disponible");
+                            } else {
+                                M.setStock(M.getStock() - DET.getCantidad());
+                            }
 
-    
-    void DefinirAnchos() {
-        TableColumn columna;
-        columna = tRegistros.getColumnModel().getColumn(0);
-        columna.setPreferredWidth(90);
-        columna = tRegistros.getColumnModel().getColumn(1);
-        columna.setPreferredWidth(150);
-        columna = tRegistros.getColumnModel().getColumn(2);
-        columna.setPreferredWidth(150);
-        columna = tRegistros.getColumnModel().getColumn(3);
-        columna.setPreferredWidth(70);
-        columna = tRegistros.getColumnModel().getColumn(4);
-        columna.setPreferredWidth(80);
-        tRegistros.getTableHeader().setReorderingAllowed(false);
-        tRegistros.getTableHeader().setResizingAllowed(false);
-    }
+                        }
+                    }
+                    ArregloM.guardarProductos();
+                    ArregloDP.guardarDetPedidos();
+                    Pedido P = new Pedido(obtenerCodigoVenta(), obtenerFechaR(), "En proceso", obtenerDNI(), obtenerMetodo());
+                    ArregloP.agregar(P);
+                    ArregloP.guardarPedidos();
+                    LimpiarCajas();
+                    listarTabla();
+                } else {
+                    JOptionPane.showMessageDialog(null, "PEDIDO YA EXISTENTE");
+                }
 
-    void habilitaCajas(boolean option) {
-        txtCodigoo.setEditable(option);
-        txtNombreCliente.setEditable(option);   
-        txtCantidad.setEditable(option);
-        txtFechaVenta.setEditable(option);
-    }
-
-    void limpiaCajas() {
-        txtCodigoo.setText("");
-        txtNombreCliente.setText("");
-        txtCantidad.setText("");
-        txtFechaVenta.setText("");
-    }
-
-    void limpiaMatriz() {
-        for (int i = 0; i < 10; i++) {
-            tRegistros.setValueAt("", i, 0);
-            tRegistros.setValueAt("", i, 1);
-            tRegistros.setValueAt("", i, 2);
-            tRegistros.setValueAt("", i, 3);
-            tRegistros.setValueAt("",i,4);
-            tRegistros.setValueAt("",i,5);
-            tRegistros.setValueAt("",i,6);
-        }
-    }
-
-    public int generaNumero() {
-        num++;
-        return num;
-    }
-
-    public int getCodigo() {
-        return Integer.parseInt(txtCodigoo.getText());
-    }
-
-
-    public String getNombreCliente() {
-        return txtNombreCliente.getText();
-    }
-    
-   public String getNombreProducto(){
-       return cmbPRODUCTOS.getSelectedItem().toString();
-   }    
-    
-    public int getPrecio() {
-        return cmbPRODUCTOS.getSelectedIndex();
-    }
- 
-    public int getCantidad(){
-        return Integer.parseInt(txtCantidad.getText());
-    }
-    
-    public String getFecha(){
-      return txtFechaVenta.getText();
-    }
-   
-   
-    void listar() {
-        if (f.getTamaño() > 0) {
-            for (int i = 0; i < f.getTamaño(); i++) {
-                Cliente fact = f.obtener(i);
-                tRegistros.setValueAt(fact.getCodigo(), i, 0);
-                tRegistros.setValueAt(fact.getNombreCliente(), i, 1);
-                tRegistros.setValueAt(fact.getNombreProducto(), i, 2);
-                tRegistros.setValueAt(fact.combos1(), i, 3);
-                tRegistros.setValueAt(fact.getCantidad(),i,4);
-                tRegistros.setValueAt(fact.cantidadTotal(), i,5);
-                tRegistros.setValueAt(fact.getFecha(), i,6);
+            } else {
+                JOptionPane.showMessageDialog(null, "ERROR: " + validar());
             }
-        } else {
-
-            limpiaMatriz();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR: " + e);
         }
-    }
+    }//GEN-LAST:event_btnFinalizarActionPerformed
 
-        void asignaFecha(){
-        GregorianCalendar cal = new GregorianCalendar();
-        txtFechaVenta.setText("" + cal.getTime());
-    }
-    
+    private void txtCodigoVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoVentaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoVentaActionPerformed
+
+    private void txtDNIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDNIActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDNIActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        try {
+            if(obtenerCant()<=0){
+                JOptionPane.showMessageDialog(null, "Cantidad invalida");
+            }else{
+                Producto M = ArregloM.buscarID(obtenerIDMenu());
+                if (M != null) {
+                    if(obtenerCant() > M.getStock()){
+                        JOptionPane.showMessageDialog(null, "Stock insuficiente");
+                    }else{
+                        DetPedido aux1 = ArregloDP.BuscarCODIDM(obtenerCodigoVenta(), obtenerIDMenu());
+                        if(aux1!=null){
+                            aux1.setCOD_Detalle(obtenerCodigoVenta());
+                            aux1.setCOD_Menu(obtenerIDMenu());
+                            if(aux1.getCantidad()+obtenerCant()>M.getStock()){
+                                JOptionPane.showMessageDialog(null, "Stock insuficiente");
+                            }else{
+                                aux1.setCantidad(aux1.getCantidad()+obtenerCant());
+                            }
+                        }else{
+                            DetPedido DPed = new DetPedido(obtenerCodigoVenta(), obtenerIDMenu(), obtenerCant());
+                            ArregloDP.agregar(DPed);
+                        }
+                        txaResultado.setText("");
+                        double Total = 0;
+                        if (ArregloDP.getTamaño()> 0) {
+                            txaResultado.append("\n  \t        -|PEDIDO|-");
+                            txaResultado.append("\n  IDMenu\tCantidad\tPrecio\tSubTotal");
+                            for (int i = 0; i < ArregloDP.getTamaño(); i++) {
+                                DetPedido DET = ArregloDP.obtener(i);
+                                if(DET.getCOD_Detalle().equals(obtenerCodigoVenta())){
+                                    Producto M2 = ArregloM.buscarID(DET.getCOD_Menu());
+                                    Total+=(double)DET.getCantidad()*M2.getPrecio();
+                                    txaResultado.append("\n  " + DET.getCOD_Menu()+"\t" + DET.getCantidad() + "\t"+ C.formatearPrecio(M2.getPrecio())+ "\t"+ C.formatearPrecio(DET.getCantidad()*M2.getPrecio()));
+                                }
+                            }
+                            txtMontoTotal.setText(C.formatearPrecio(Total));
+                        }
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null, "IDMenu invalido");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR: " + e);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnQuitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarActionPerformed
+        try {
+            if(obtenerCant()<=0){
+                JOptionPane.showMessageDialog(null, "Cantidad invalida");
+            } else {
+                Producto M = ArregloM.buscarID(obtenerIDMenu());
+                if (M != null) {
+                    DetPedido aux1 = ArregloDP.BuscarCODIDM(obtenerCodigoVenta(), obtenerIDMenu());
+                    if (aux1 != null) {
+                        if (aux1.getCantidad() - obtenerCant() <= 0) {
+                            ArregloDP.eliminar(aux1);
+                        } else {
+                            aux1.setCantidad(aux1.getCantidad() - obtenerCant());
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "IDMenu ("+M.getIDProducto()+") no se encuentra en el pedido");
+                    }
+                    txaResultado.setText("");
+                    double Total = 0;
+                    if (ArregloDP.getTamaño() > 0) {
+                        DecimalFormat df = new DecimalFormat("###0.00");
+                        txaResultado.append("\n  \t        -|PEDIDO|-");
+                        txaResultado.append("\n  IDMenu\tCantidad\tPrecio\tSubTotal");
+                        for (int i = 0; i < ArregloDP.getTamaño(); i++) {
+                            DetPedido DET = ArregloDP.obtener(i);
+                            if(DET.getCOD_Detalle().equals(obtenerCodigoVenta())){
+                                Producto M2 = ArregloM.buscarID(DET.getCOD_Menu());
+                                Total += (double) DET.getCantidad() * M2.getPrecio();
+                                txaResultado.append("\n  " + DET.getCOD_Menu() + "\t" + DET.getCantidad() + "\t" + C.formatearPrecio(M2.getPrecio()) + "\tS/" + df.format(DET.getCantidad() * M2.getPrecio()));
+                            }
+                        }
+                        txtMontoTotal.setText("S/" + df.format(Total));
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "IDMenu invalido");
+                }
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR: " + e);
+        }
+    }//GEN-LAST:event_btnQuitarActionPerformed
+
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void chbGCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbGCActionPerformed
+        Checks();
+    }//GEN-LAST:event_chbGCActionPerformed
+
+    private void chbBebidasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbBebidasActionPerformed
+        Checks();
+    }//GEN-LAST:event_chbBebidasActionPerformed
+
+    private void chbReposActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chbReposActionPerformed
+        Checks();
+    }//GEN-LAST:event_chbReposActionPerformed
+   
  
     
     /**
@@ -730,46 +607,38 @@ public class FrmVendedor extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel FONDO;
+    private javax.swing.JLabel FONDO2;
     private javax.swing.JLabel Jimagen;
-    private javax.swing.JButton btnConsultar;
-    private javax.swing.JButton btnGrabarIngreso;
-    private javax.swing.JButton btnGrabarModificado;
-    private javax.swing.JButton btnListado;
-    private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnRegistrar;
+    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnFinalizar;
+    private javax.swing.JButton btnQuitar;
     private javax.swing.JButton btnReturn;
-    private javax.swing.JComboBox<String> cmbPRODUCTOS;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbMet_Pago;
+    private javax.swing.JCheckBox chbBebidas;
+    private javax.swing.JCheckBox chbGC;
+    private javax.swing.JCheckBox chbRepos;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JPanel lblMantenimiento;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private rojeru_san.RSLabelHora rSLabelHora1;
-    private javax.swing.JTable tRegistros;
-    private javax.swing.JTextField txtCantidad;
-    private javax.swing.JTextField txtCodigoo;
-    private javax.swing.JTextField txtFechaVenta;
-    private javax.swing.JTextField txtNombreCliente;
+    private javax.swing.JTable tMenu;
+    private javax.swing.JTextArea txaResultado;
+    private javax.swing.JTextField txtCant;
+    private javax.swing.JTextField txtCodigoVenta;
+    private javax.swing.JTextField txtDNI;
+    private javax.swing.JTextField txtIDMenu;
+    private javax.swing.JTextField txtMontoTotal;
+    private javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }
