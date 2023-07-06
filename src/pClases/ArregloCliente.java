@@ -20,22 +20,19 @@ public class ArregloCliente {
    
  public void cargar_txt(){  
         try{
-     File ruta = new File("Vendedor1.txt");
+     File ruta = new File("Cliente.txt");
      if(!ruta.exists()){
         ruta.createNewFile();
      }
      if(ruta.exists()){
-          BufferedReader bu = new BufferedReader(new FileReader("Vendedor1.txt"));           
+          BufferedReader bu = new BufferedReader(new FileReader("Cliente.txt"));           
             String linea = "";
             while((linea = bu.readLine())!=null){
                 StringTokenizer st = new StringTokenizer(linea,",");
-                String Nom = st.nextToken().trim();
-                String NomPro = st.nextToken().trim();
-                int cant = Integer.parseInt(st.nextToken().trim());
-                int Precio = Integer.parseInt(st.nextToken().trim());
                 int cod = Integer.parseInt(st.nextToken().trim());
-                String fecha = st.nextToken().trim();
-                Cliente x = new Cliente(cod,Nom,NomPro,Precio,cant,fecha);
+                String nom = st.nextToken().trim();
+                String ape = st.nextToken().trim();
+                Cliente x = new Cliente(cod,nom,ape);
                 agregar(x);
             } 
             bu.close();
@@ -49,14 +46,11 @@ public class ArregloCliente {
     
         public void grabar_txt(){
         try{
-           PrintWriter pw = new PrintWriter(new FileWriter("Vendedor1.txt"));
+           PrintWriter pw = new PrintWriter(new FileWriter("Cliente.txt"));
            for(int i = 0 ; i < getTamaño();i++){
-               pw.println(obtener(i).getNombreCliente()+","+
-               obtener(i).getNombreProducto()+","+       
-               obtener(i).getCantidad()+","+
-               obtener(i).getCombos()+","+
-               obtener(i).getCodigo()+","+
-               obtener(i).getFecha());
+               pw.println(obtener(i).getCodigo()+","+
+               obtener(i).getNombre()+","+       
+               obtener(i).getApellido());
            }
            pw.close();
         }catch(Exception ex ){

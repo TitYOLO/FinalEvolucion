@@ -2,20 +2,32 @@
 package pFormularios;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import pClases.ArregloCliente;
 import pClases.Cliente;
 import pClases.ArregloCliente;
+import pClases.ArregloProducto;
+import pClases.Producto;
 
 public class frmAdmin extends javax.swing.JFrame {
 
-    ArregloCliente f  = new ArregloCliente();
-      Cliente p;
-   Cliente rp;
+    DefaultTableModel modelotabla;
+    String[] cabecera={"Codigo","Nombre","Categoria","Precio","Stock","Estado"};
+    String[][] data={};
+    ArregloProducto arregloP = new ArregloProducto();
+    
     public frmAdmin() {
         initComponents();
+        inicial();
     }
-
+    void inicial() {
+        arregloP.CargarTXT();
+        modelotabla = new DefaultTableModel(data,cabecera);
+        tRegistros.setModel(modelotabla);
+        definirAnchos();
+        listarTabla();
+    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -24,21 +36,22 @@ public class frmAdmin extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tRegistros = new javax.swing.JTable();
-        btnGrabarModificado = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        cbCategoria = new javax.swing.JComboBox<>();
+        btnRegistrar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtCodigoo = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
         btnReturn = new javax.swing.JButton();
         btnListado = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         bntSALIR = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        txtNombreCliente = new javax.swing.JTextField();
-        txtCantidad = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
+        txtPrecio = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btnEliminar1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -79,30 +92,38 @@ public class frmAdmin extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tRegistros);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(10, 270, 1090, 330);
+        jScrollPane2.setBounds(10, 380, 1090, 260);
 
-        btnGrabarModificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/guardar-el-archivo (1).png"))); // NOI18N
-        btnGrabarModificado.setContentAreaFilled(false);
-        btnGrabarModificado.addActionListener(new java.awt.event.ActionListener() {
+        jLabel7.setText("Categoria");
+        getContentPane().add(jLabel7);
+        jLabel7.setBounds(480, 140, 120, 15);
+
+        cbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Normal", "Combo", "Bedida" }));
+        getContentPane().add(cbCategoria);
+        cbCategoria.setBounds(480, 160, 200, 50);
+
+        btnRegistrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/guardar-el-archivo (1).png"))); // NOI18N
+        btnRegistrar.setContentAreaFilled(false);
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGrabarModificadoActionPerformed(evt);
+                btnRegistrarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnGrabarModificado);
-        btnGrabarModificado.setBounds(700, 190, 70, 60);
+        getContentPane().add(btnRegistrar);
+        btnRegistrar.setBounds(860, 160, 70, 60);
 
-        jLabel2.setText("CODIGO BOLETA :");
+        jLabel2.setText("CODIGO:");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(70, 60, 110, 20);
+        jLabel2.setBounds(160, 130, 60, 20);
 
-        txtCodigoo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
-        txtCodigoo.addActionListener(new java.awt.event.ActionListener() {
+        txtCodigo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 12))); // NOI18N
+        txtCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCodigooActionPerformed(evt);
+                txtCodigoActionPerformed(evt);
             }
         });
-        getContentPane().add(txtCodigoo);
-        txtCodigoo.setBounds(180, 40, 220, 60);
+        getContentPane().add(txtCodigo);
+        txtCodigo.setBounds(160, 150, 220, 60);
 
         btnReturn.setBackground(new java.awt.Color(51, 255, 204));
         btnReturn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/Return (35).png"))); // NOI18N
@@ -123,7 +144,7 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnListado);
-        btnListado.setBounds(420, 180, 80, 80);
+        btnListado.setBounds(950, 230, 70, 60);
 
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/eliminar (1).png"))); // NOI18N
         btnEliminar.setContentAreaFilled(false);
@@ -133,7 +154,7 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnEliminar);
-        btnEliminar.setBounds(510, 190, 70, 60);
+        btnEliminar.setBounds(860, 230, 70, 60);
 
         bntSALIR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/salir g (35).png"))); // NOI18N
         bntSALIR.setContentAreaFilled(false);
@@ -153,49 +174,39 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnModificar);
-        btnModificar.setBounds(600, 190, 70, 60);
+        btnModificar.setBounds(950, 160, 70, 60);
 
-        jLabel6.setText("NOMBRE CLIENTE : ");
+        jLabel6.setText("NOMBRE: ");
         getContentPane().add(jLabel6);
-        jLabel6.setBounds(60, 130, 120, 20);
+        jLabel6.setBounds(160, 240, 70, 20);
 
-        txtNombreCliente.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        txtNombreCliente.addActionListener(new java.awt.event.ActionListener() {
+        txtNombre.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
+        txtNombre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreClienteActionPerformed(evt);
+                txtNombreActionPerformed(evt);
             }
         });
-        getContentPane().add(txtNombreCliente);
-        txtNombreCliente.setBounds(180, 110, 220, 60);
+        getContentPane().add(txtNombre);
+        txtNombre.setBounds(160, 260, 220, 60);
 
-        txtCantidad.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        txtCantidad.addActionListener(new java.awt.event.ActionListener() {
+        txtPrecio.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
+        txtPrecio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCantidadActionPerformed(evt);
+                txtPrecioActionPerformed(evt);
             }
         });
-        getContentPane().add(txtCantidad);
-        txtCantidad.setBounds(170, 190, 220, 60);
+        getContentPane().add(txtPrecio);
+        txtPrecio.setBounds(480, 260, 220, 60);
 
-        jLabel9.setText("CANTIDAD : ");
+        jLabel9.setText("PRECIO: ");
         getContentPane().add(jLabel9);
-        jLabel9.setBounds(90, 200, 70, 40);
+        jLabel9.setBounds(480, 230, 70, 40);
         getContentPane().add(jLabel1);
         jLabel1.setBounds(20, 70, 0, 0);
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
         getContentPane().add(jLabel4);
         jLabel4.setBounds(0, 0, 1110, 740);
-
-        btnEliminar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/eliminar (1).png"))); // NOI18N
-        btnEliminar1.setContentAreaFilled(false);
-        btnEliminar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminar1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnEliminar1);
-        btnEliminar1.setBounds(910, 30, 70, 60);
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/light-blue-abstract-blur-backdrop-vector.jpg"))); // NOI18N
         jLabel5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -206,7 +217,58 @@ public class frmAdmin extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(1126, 772));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    void listarTabla() {
+        limpiarTabla();
+        if (arregloP.getTamaño()> 0) {
+            for (int i = 0; i < arregloP.getTamaño(); i++) {
+                Producto t = arregloP.obtener(i);
+                Object[] Fila = {t.getIDProducto(),t.getNombre(),t.getCategoria(),t.getPrecio(),
+                        t.getStock(),t.getEstado()};
+                modelotabla.addRow(Fila);
+            }
+        }
+    }
+    void limpiarTabla() {
+        modelotabla.setRowCount(0);
+    }
+    void limpiarCajas() {
+        txtCodigo.setText("");
+        txtPrecio.setText("");
+        txtNombre.setText("");
+    }
+    void definirAnchos() {
+        int Tmi[]={110,140,150,220,220,200};
+        TableColumn columna;
+        columna = tRegistros.getColumnModel().getColumn(0);
+        columna.setPreferredWidth(Tmi[0]);
+        columna = tRegistros.getColumnModel().getColumn(1);
+        columna.setPreferredWidth(Tmi[1]);
+        columna = tRegistros.getColumnModel().getColumn(2);
+        columna.setPreferredWidth(Tmi[2]);
+        columna = tRegistros.getColumnModel().getColumn(3);
+        columna.setPreferredWidth(Tmi[3]);
+        columna = tRegistros.getColumnModel().getColumn(4);
+        columna.setPreferredWidth(Tmi[4]);
+        columna = tRegistros.getColumnModel().getColumn(5);
+        columna.setPreferredWidth(Tmi[5]);
+        tRegistros.getTableHeader().setReorderingAllowed(false);
+        tRegistros.getTableHeader().setResizingAllowed(false);
+    }
+    
+    String getCodigo() { return txtCodigo.getText();}
+    String getCategoria(){return cbCategoria.getSelectedItem().toString();}
+    String getNombre() { return txtNombre.getText();}
+    double getPrecio(){return Double.parseDouble(txtPrecio.getText());}
+    
+    String validar() {
+        if (txtCodigo.getText().equals("") || txtNombre.getText().equals("") || txtPrecio.getText().equals("")) {
+            return "Rellenar Todos los Campos";
+        } else if(getPrecio()<=0){
+            return "Ingresar un Precio Valido";
+        } 
+        else return "";
+    }
+    
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
         MenuPrincipal objl2= new MenuPrincipal();
         objl2.setVisible(true);
@@ -215,205 +277,87 @@ public class frmAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReturnActionPerformed
 
     private void btnListadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListadoActionPerformed
-        listar();
+        listarTabla();
     }//GEN-LAST:event_btnListadoActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        try {
-            int buscoFactura = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Ingrese un numero de Factura a Eliminar"));
-        Cliente fact = f.buscar(buscoFactura);
-
-        if (fact != null) {
-            f.eliminar(fact);
-            JOptionPane.showMessageDialog(null, "Factura eliminada correctamente",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-            limpiaMatriz();
-            listar();
-        } else {
-            JOptionPane.showMessageDialog(null, "No existe el numero de factura ingresada",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
+        String eliminarM = JOptionPane.showInputDialog(this, "Codigo del Producto a eliminar");
+        if(eliminarM!=null){
+            Producto aux = arregloP.BuscarID(eliminarM);
+            if (aux != null) {
+                arregloP.eliminar(aux);
+                arregloP.GuardarTXT();
+                listarTabla();
+            } else {
+                JOptionPane.showMessageDialog(this, "CODIGO NO EXISTENTE", "AVISO", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "No existe el numero de factura ingresada",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-        f.grabar_txt();
     }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
-        try {
-            int buscoFactura = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Ingrese un numero de Factura a Eliminar"));
-        Cliente fact = f.buscar(buscoFactura);
-
-        if (fact != null) {
-            f.eliminar(fact);
-            JOptionPane.showMessageDialog(null, "Factura eliminada correctamente",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-            limpiaMatriz();
-            listar();
-        } else {
-            JOptionPane.showMessageDialog(null, "No existe el numero de factura ingresada",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "No existe el numero de factura ingresada",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-        f.grabar_txt();
-    }//GEN-LAST:event_btnEliminar1ActionPerformed
 
     private void bntSALIRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntSALIRActionPerformed
        System.exit(0);
     }//GEN-LAST:event_bntSALIRActionPerformed
 
-        void limpiaCajas() {
-        txtCodigoo.setText("");
-        txtNombreCliente.setText("");
-        txtCantidad.setText("");
-        txtFechaVenta.setText("");
-    }
-        
-     void habilitaCajas(boolean option) {
-        txtCodigoo.setEditable(option);
-        txtNombreCliente.setEditable(option);   
-        txtCantidad.setEditable(option);
-        txtFechaVenta.setEditable(option);
-    }
-    
-    
+
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        try {
-            limpiaCajas();
-            limpiaMatriz();
-
-            btnModificar.setVisible(false);
-            btnGrabarModificado.setVisible(true);
-
-            int buscaRegistro = Integer.parseInt(JOptionPane.showInputDialog(null,
-                "Ingrese N° de Registro"));
-        Cliente fact = f.buscar(buscaRegistro);
-
-        if (fact != null) {
-            tRegistros.setValueAt(fact.getCodigo(), 0, 0);
-            tRegistros.setValueAt(fact.getNombreCliente(), 0, 1);
-            tRegistros.setValueAt(fact.getNombreProducto(), 0, 2);
-            tRegistros.setValueAt(fact.getCantidad(),0,4);
-
-            txtCodigoo.setText("" + fact.getCodigo());
-            txtNombreCliente.setText(fact.getNombreCliente());
-            txtCantidad.setText(""+fact.getCantidad());
-
-            habilitaCajas(true);
-            txtCodigoo.setEditable(true);
-            txtNombreCliente.setEditable(true);
-            txtCantidad.setEditable(true);
-
+        Producto auxT = arregloP.BuscarID(getCodigo());
+        if (validar().equals("")) {
+            if (auxT != null) {
+                auxT.setIDProducto(getCodigo());
+                auxT.setNombre(getNombre());
+                auxT.setCategoria(getCategoria());
+                auxT.setPrecio(getPrecio());
+                auxT.setStock(5);
+                auxT.setEstado("Disponible");
+                arregloP.GuardarTXT();
+                listarTabla();
+                limpiarCajas();
+            }else{
+                JOptionPane.showMessageDialog(null, "CODIGO NO EXISTENTE ");
+            }
         } else {
-            JOptionPane.showMessageDialog(null, "Factura NO encontrada",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-        }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Factura NO encontrada",
-                "Confirmacion", JOptionPane.ERROR_MESSAGE);
-            btnModificar.setVisible(true);
-            btnGrabarModificado.setVisible(false);
+            JOptionPane.showMessageDialog(null, "ERROR: " + validar());
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 
-    private void btnGrabarModificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarModificadoActionPerformed
-          try {
-            Cliente fact = f.buscar(getCodigo());
-            fact.setNombreCliente(getNombreCliente());
-            fact.setNombreProducto(getNombreProducto());
-            fact.setCombos(getPrecio());
-            fact.setCantidad(getCantidad());
-            fact.setFecha(getFecha());
-            JOptionPane.showMessageDialog(null, "Factura modificada correctamente",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-            listar();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Ocurrio un error al intentar grabar",
-                "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-        btnGrabarModificado.setVisible(false);
-        btnModificar.setVisible(true);
-    }//GEN-LAST:event_btnGrabarModificadoActionPerformed
-
-    private void txtCodigooActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigooActionPerformed
-
-    }//GEN-LAST:event_txtCodigooActionPerformed
-
-    private void txtNombreClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreClienteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreClienteActionPerformed
-
-    private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCantidadActionPerformed
-
-    
-    
-    
-    
-    void limpiaMatriz() {
-        for (int i = 0; i < 10; i++) {
-            tRegistros.setValueAt("", i, 0);
-            tRegistros.setValueAt("", i, 1);
-            tRegistros.setValueAt("", i, 2);
-            tRegistros.setValueAt("", i, 3);
-            tRegistros.setValueAt("",i,4);
-            tRegistros.setValueAt("",i,5);
-            tRegistros.setValueAt("",i,6);
-        }
-    }
-
-    
-    
-    void listar() {
-        if (f.getTamaño() > 0) {
-            for (int i = 0; i < f.getTamaño(); i++) {
-                Cliente fact = f.obtener(i);
-                tRegistros.setValueAt(fact.getCodigo(), i, 0);
-                tRegistros.setValueAt(fact.getNombreCliente(), i, 1);
-                tRegistros.setValueAt(fact.getNombreProducto(), i, 2);
-                tRegistros.setValueAt(fact.combos1(), i, 3);
-                tRegistros.setValueAt(fact.getCantidad(),i,4);
-                tRegistros.setValueAt(fact.cantidadTotal(), i,5);
-                tRegistros.setValueAt(fact.getFecha(), i,6);
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        try {
+            if (validar().equals("")) {
+                Producto aux1 = arregloP.BuscarID(getCodigo());
+                if (aux1 == null) {
+                    Producto unT = new Producto(getCodigo(),getNombre(), getCategoria(), getPrecio(), 5, "Disponible") {
+                        @Override
+                        public double ObtenerPrecio() {
+                            throw new UnsupportedOperationException("Not supported yet.");
+                        }
+                    };
+                    arregloP.agregar(unT);
+                    arregloP.GuardarTXT();
+                    listarTabla();
+                    limpiarCajas();
+                } else {
+                    JOptionPane.showMessageDialog(null, "CODIGO YA EXISTENTE");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "ERROR: " + validar());
             }
-        } else {
-            limpiaMatriz();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "ERROR: " + e);
         }
-    }
-    
-    
+    }//GEN-LAST:event_btnRegistrarActionPerformed
 
-    public int getCodigo() {
-        return Integer.parseInt(txtCodigoo.getText());
-    }
+    private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
 
+    }//GEN-LAST:event_txtCodigoActionPerformed
 
-    public String getNombreCliente() {
-        return txtNombreCliente.getText();
-    }
-    
-   public String getNombreProducto(){
-       return cmbPRODUCTOS.getSelectedItem().toString();
-   }    
-    
-    public int getPrecio() {
-        return cmbPRODUCTOS.getSelectedIndex();
-    }
- 
-    public int getCantidad(){
-        return Integer.parseInt(txtCantidad.getText());
-    }
-    
-    public String getFecha(){
-      return txtFechaVenta.getText();
-    }
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreActionPerformed
+
+    private void txtPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrecioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrecioActionPerformed
+
     
     /**
      * @param args the command line arguments
@@ -453,22 +397,23 @@ public class frmAdmin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntSALIR;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnEliminar1;
-    private javax.swing.JButton btnGrabarModificado;
     private javax.swing.JButton btnListado;
     private javax.swing.JButton btnModificar;
+    private javax.swing.JButton btnRegistrar;
     private javax.swing.JButton btnReturn;
+    private javax.swing.JComboBox<String> cbCategoria;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tRegistros;
-    private javax.swing.JTextField txtCantidad;
-    private javax.swing.JTextField txtCodigoo;
-    private javax.swing.JTextField txtNombreCliente;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }

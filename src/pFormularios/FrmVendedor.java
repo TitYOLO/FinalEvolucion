@@ -403,7 +403,7 @@ public class FrmVendedor extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigooActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        try {
+        /*try {
             limpiaCajas();
             limpiaMatriz();
             int buscoFactura = Integer.parseInt(JOptionPane.showInputDialog(null,
@@ -424,7 +424,7 @@ public class FrmVendedor extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error de entrada de datos",
                 "Confirmacion", JOptionPane.ERROR_MESSAGE);
-        }
+        }*/
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void btnListadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnListadoActionPerformed
@@ -432,7 +432,7 @@ public class FrmVendedor extends javax.swing.JFrame {
     }//GEN-LAST:event_btnListadoActionPerformed
 
     private void btnGrabarModificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarModificadoActionPerformed
-        try {
+        /*try {
             Cliente fact = f.buscar(getCodigo());
             fact.setNombreCliente(getNombreCliente());
             fact.setNombreProducto(getNombreProducto());
@@ -447,7 +447,7 @@ public class FrmVendedor extends javax.swing.JFrame {
                 "Confirmacion", JOptionPane.INFORMATION_MESSAGE);
         }
         btnGrabarModificado.setVisible(false);
-        btnModificar.setVisible(true);
+        btnModificar.setVisible(true);*/
     }//GEN-LAST:event_btnGrabarModificadoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -465,7 +465,7 @@ public class FrmVendedor extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnGrabarIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGrabarIngresoActionPerformed
-
+/*
         try {
             habilitaCajas(false);
             btnRegistrar.setVisible(true);
@@ -480,11 +480,11 @@ public class FrmVendedor extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Error de ingreso de datos",
                 "Error", JOptionPane.ERROR_MESSAGE);
             num--;
-        }
+        }*/
     }//GEN-LAST:event_btnGrabarIngresoActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        try {
+        /*try {
             limpiaCajas();
             limpiaMatriz();
 
@@ -520,7 +520,7 @@ public class FrmVendedor extends javax.swing.JFrame {
                 "Confirmacion", JOptionPane.ERROR_MESSAGE);
             btnModificar.setVisible(true);
             btnGrabarModificado.setVisible(false);
-        }
+        }*/
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void txtNombreClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreClienteActionPerformed
@@ -667,7 +667,7 @@ public class FrmVendedor extends javax.swing.JFrame {
    
    
     void listar() {
-        if (f.getTamaño() > 0) {
+       /* if (f.getTamaño() > 0) {
             for (int i = 0; i < f.getTamaño(); i++) {
                 Cliente fact = f.obtener(i);
                 tRegistros.setValueAt(fact.getCodigo(), i, 0);
@@ -681,7 +681,7 @@ public class FrmVendedor extends javax.swing.JFrame {
         } else {
 
             limpiaMatriz();
-        }
+        }*/
     }
 
         void asignaFecha(){
