@@ -77,15 +77,3 @@ class PrecioFormatter {
         return "S/" + df.format(precio);
     }
 }
-
-class Factura {
-
-    public double obtenerTotal(Iterable<Producto> productos) {
-        double total = 0;
-        for (Producto producto : productos) {
-            total += producto.obtenerPrecio();
-        }
-        return total;
-    }
-}
-    

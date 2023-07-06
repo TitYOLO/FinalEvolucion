@@ -4,25 +4,23 @@ package pFormularios;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import pClases.ArregloCliente;
-import pClases.Cliente;
-import pClases.ArregloCliente;
-import pClases.ArregloProducto;
-import pClases.Producto;
+import pClases.ProductoRepository;
+import pClases.ProductoFileManager;
+import FProductos.*;
 
 public class frmAdmin extends javax.swing.JFrame {
 
     DefaultTableModel modelotabla;
     String[] cabecera={"Codigo","Nombre","Categoria","Precio","Stock","Estado"};
     String[][] data={};
-    ArregloProducto arregloP = new ArregloProducto();
-    
+    ProductoRepository arregloP = new ProductoRepository(new ProductoFileManager());
+
     public frmAdmin() {
         initComponents();
         inicial();
     }
     void inicial() {
-        arregloP.CargarTXT();
+        arregloP.cargarProductos();
         modelotabla = new DefaultTableModel(data,cabecera);
         tRegistros.setModel(modelotabla);
         definirAnchos();
@@ -283,10 +281,10 @@ public class frmAdmin extends javax.swing.JFrame {
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         String eliminarM = JOptionPane.showInputDialog(this, "Codigo del Producto a eliminar");
         if(eliminarM!=null){
-            Producto aux = arregloP.BuscarID(eliminarM);
+            Producto aux = arregloP.buscarID(eliminarM);
             if (aux != null) {
                 arregloP.eliminar(aux);
-                arregloP.GuardarTXT();
+                arregloP.guardarProductos();
                 listarTabla();
             } else {
                 JOptionPane.showMessageDialog(this, "CODIGO NO EXISTENTE", "AVISO", JOptionPane.INFORMATION_MESSAGE);
@@ -300,7 +298,7 @@ public class frmAdmin extends javax.swing.JFrame {
 
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        Producto auxT = arregloP.BuscarID(getCodigo());
+        Producto auxT = arregloP.buscarID(getCodigo());
         if (validar().equals("")) {
             if (auxT != null) {
                 auxT.setIDProducto(getCodigo());
@@ -309,7 +307,7 @@ public class frmAdmin extends javax.swing.JFrame {
                 auxT.setPrecio(getPrecio());
                 auxT.setStock(5);
                 auxT.setEstado("Disponible");
-                arregloP.GuardarTXT();
+                arregloP.guardarProductos();
                 listarTabla();
                 limpiarCajas();
             }else{
@@ -323,16 +321,16 @@ public class frmAdmin extends javax.swing.JFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         try {
             if (validar().equals("")) {
-                Producto aux1 = arregloP.BuscarID(getCodigo());
+                Producto aux1 = arregloP.buscarID(getCodigo());
                 if (aux1 == null) {
                     Producto unT = new Producto(getCodigo(),getNombre(), getCategoria(), getPrecio(), 5, "Disponible") {
                         @Override
-                        public double ObtenerPrecio() {
-                            throw new UnsupportedOperationException("Not supported yet.");
+                        public double obtenerPrecio() {
+                            throw new UnsupportedOperationException("Not supported yet."); 
                         }
                     };
                     arregloP.agregar(unT);
-                    arregloP.GuardarTXT();
+                    arregloP.guardarProductos();
                     listarTabla();
                     limpiarCajas();
                 } else {
