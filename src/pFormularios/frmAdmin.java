@@ -34,12 +34,6 @@ public class frmAdmin extends javax.swing.JFrame {
         btnModificar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtNombreCliente = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
-        cmbPRODUCTOS = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
-        txtFechaVenta = new javax.swing.JTextField();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jComboBox1 = new javax.swing.JComboBox<>();
         txtCantidad = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -95,7 +89,7 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnGrabarModificado);
-        btnGrabarModificado.setBounds(630, 190, 70, 60);
+        btnGrabarModificado.setBounds(700, 190, 70, 60);
 
         jLabel2.setText("CODIGO BOLETA :");
         getContentPane().add(jLabel2);
@@ -139,7 +133,7 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnEliminar);
-        btnEliminar.setBounds(500, 190, 70, 60);
+        btnEliminar.setBounds(510, 190, 70, 60);
 
         bntSALIR.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pImagenes/salir g (35).png"))); // NOI18N
         bntSALIR.setContentAreaFilled(false);
@@ -159,7 +153,7 @@ public class frmAdmin extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btnModificar);
-        btnModificar.setBounds(570, 190, 70, 60);
+        btnModificar.setBounds(600, 190, 70, 60);
 
         jLabel6.setText("NOMBRE CLIENTE : ");
         getContentPane().add(jLabel6);
@@ -173,62 +167,6 @@ public class frmAdmin extends javax.swing.JFrame {
         });
         getContentPane().add(txtNombreCliente);
         txtNombreCliente.setBounds(180, 110, 220, 60);
-
-        jLabel7.setText("PRODUCTOS :");
-        getContentPane().add(jLabel7);
-        jLabel7.setBounds(710, 70, 80, 16);
-
-        cmbPRODUCTOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "COMBO 1", "COMBO 2", "POLLO ENTERO", "1/2 POLLO", "1/4 POLLO", "PROMO 1/4 POLLO + GASEOSA", "PROMO POLLO ENTERO + 1.5 GASEOSA", "PROMO 1/2 POLLO PEPSI " }));
-        cmbPRODUCTOS.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbPRODUCTOSItemStateChanged(evt);
-            }
-        });
-        cmbPRODUCTOS.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseMoved(evt);
-            }
-        });
-        cmbPRODUCTOS.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                cmbPRODUCTOSMousePressed(evt);
-            }
-        });
-        cmbPRODUCTOS.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbPRODUCTOSActionPerformed(evt);
-            }
-        });
-        getContentPane().add(cmbPRODUCTOS);
-        cmbPRODUCTOS.setBounds(810, 40, 270, 70);
-
-        jLabel8.setText("FECHA:");
-        getContentPane().add(jLabel8);
-        jLabel8.setBounds(730, 130, 60, 30);
-        getContentPane().add(txtFechaVenta);
-        txtFechaVenta.setBounds(810, 120, 220, 60);
-
-        jCheckBox3.setText("TARJETA:");
-        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jCheckBox3);
-        jCheckBox3.setBounds(720, 210, 100, 20);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BCP", "INTERBANK", "SCOTIABANK", "BANBIF", "BBVA ", "ETC" }));
-        getContentPane().add(jComboBox1);
-        jComboBox1.setBounds(810, 190, 240, 60);
 
         txtCantidad.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
         txtCantidad.addActionListener(new java.awt.event.ActionListener() {
@@ -411,41 +349,9 @@ public class frmAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreClienteActionPerformed
 
-    private void cmbPRODUCTOSItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSItemStateChanged
-       
-    }//GEN-LAST:event_cmbPRODUCTOSItemStateChanged
-
-    private void cmbPRODUCTOSMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseMoved
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbPRODUCTOSMouseMoved
-
-    private void cmbPRODUCTOSMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseClicked
-
-    }//GEN-LAST:event_cmbPRODUCTOSMouseClicked
-
-    private void cmbPRODUCTOSMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseEntered
-
-    }//GEN-LAST:event_cmbPRODUCTOSMouseEntered
-
-    private void cmbPRODUCTOSMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMouseExited
-
-    }//GEN-LAST:event_cmbPRODUCTOSMouseExited
-
-    private void cmbPRODUCTOSMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSMousePressed
-
-    }//GEN-LAST:event_cmbPRODUCTOSMousePressed
-
-    private void cmbPRODUCTOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPRODUCTOSActionPerformed
-
-    }//GEN-LAST:event_cmbPRODUCTOSActionPerformed
-
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadActionPerformed
-
-    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox3ActionPerformed
 
     
     
@@ -552,23 +458,17 @@ public class frmAdmin extends javax.swing.JFrame {
     private javax.swing.JButton btnListado;
     private javax.swing.JButton btnModificar;
     private javax.swing.JButton btnReturn;
-    private javax.swing.JComboBox<String> cmbPRODUCTOS;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tRegistros;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtCodigoo;
-    private javax.swing.JTextField txtFechaVenta;
     private javax.swing.JTextField txtNombreCliente;
     // End of variables declaration//GEN-END:variables
 }
