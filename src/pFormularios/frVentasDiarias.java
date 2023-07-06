@@ -6,10 +6,6 @@
 package pFormularios;
 
 
-import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
-import pClases.Cliente;
-import pClases.ArregloCliente;
 
 /**import pClases.ArregloCliente;
  *
@@ -17,7 +13,6 @@ import pClases.ArregloCliente;
  */
 public class frVentasDiarias extends javax.swing.JFrame {
 
-    ArregloCliente F  = new ArregloCliente();
     
     public frVentasDiarias() {
         initComponents();

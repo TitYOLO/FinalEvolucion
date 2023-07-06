@@ -1,11 +1,11 @@
 package pClases;
 
-public class Det_Pedido {
+public class DetPedido {
     private String COD_Detalle;
     private String COD_Menu;
     private int Cantidad;
 
-    public Det_Pedido(String COD_Detalle, String COD_Menu, int Cantidad) {
+    public DetPedido(String COD_Detalle, String COD_Menu, int Cantidad) {
         this.COD_Detalle = COD_Detalle;
         this.COD_Menu = COD_Menu;
         this.Cantidad = Cantidad;

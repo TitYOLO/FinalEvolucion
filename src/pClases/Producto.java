@@ -1,6 +1,4 @@
-
 import FProductos.IProducto;
-import java.text.DecimalFormat;
 
 public abstract class Producto implements IProducto {
 
@@ -67,13 +65,5 @@ public abstract class Producto implements IProducto {
 
     public void setEstado(String estado) {
         this.Estado = estado;
-    }
-}
-
-class PrecioFormatter {
-
-    public static String formatearPrecio(double precio) {
-        DecimalFormat df = new DecimalFormat("###0.00");
-        return "S/" + df.format(precio);
     }
 }

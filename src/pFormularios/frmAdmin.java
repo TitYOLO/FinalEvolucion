@@ -4,8 +4,8 @@ package pFormularios;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import pClases.ProductoRepository;
-import pClases.ProductoFileManager;
+import Repository.ImplRepository.ProductoRepository;
+import FileManager.ProductoFileManager;
 import FProductos.*;
 
 public class frmAdmin extends javax.swing.JFrame {
@@ -24,7 +24,7 @@ public class frmAdmin extends javax.swing.JFrame {
         modelotabla = new DefaultTableModel(data,cabecera);
         tRegistros.setModel(modelotabla);
         definirAnchos();
-        listarTabla();
+        limpiarTabla();
     }
     
     @SuppressWarnings("unchecked")
@@ -96,7 +96,7 @@ public class frmAdmin extends javax.swing.JFrame {
         getContentPane().add(jLabel7);
         jLabel7.setBounds(480, 140, 120, 15);
 
-        cbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Normal", "Combo", "Bedida" }));
+        cbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Normal", "Combo", "Bebida" }));
         getContentPane().add(cbCategoria);
         cbCategoria.setBounds(480, 160, 200, 50);
 
@@ -323,12 +323,7 @@ public class frmAdmin extends javax.swing.JFrame {
             if (validar().equals("")) {
                 Producto aux1 = arregloP.buscarID(getCodigo());
                 if (aux1 == null) {
-                    Producto unT = new Producto(getCodigo(),getNombre(), getCategoria(), getPrecio(), 5, "Disponible") {
-                        @Override
-                        public double obtenerPrecio() {
-                            throw new UnsupportedOperationException("Not supported yet."); 
-                        }
-                    };
+                    Producto unT = ProductoAsignacion.crearProducto(getCodigo(), getNombre(), getCategoria(), getPrecio());
                     arregloP.agregar(unT);
                     arregloP.guardarProductos();
                     listarTabla();

@@ -129,7 +129,7 @@
           <StringArray count="3">
             <StringItem index="0" value="Normal"/>
             <StringItem index="1" value="Combo"/>
-            <StringItem index="2" value="Bedida"/>
+            <StringItem index="2" value="Bebida"/>
           </StringArray>
         </Property>
       </Properties>

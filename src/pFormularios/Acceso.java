@@ -5,12 +5,7 @@
  */
 package pFormularios;
 
-import java.util.GregorianCalendar;
-import java.util.Set;
 import javax.swing.JOptionPane;
-import javax.swing.table.TableColumn;
-import pClases.ArregloCliente;
-import pClases.Cliente;
 import pFormularios.Acceso;
 
 public class Acceso extends javax.swing.JFrame {
